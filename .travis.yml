@@ -11,7 +11,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t korynewton/react-test -f ./client/Dockfile.dev ./client
+  - docker build -t korynewton/react-test -f ./client/Dockerfile.dev ./client
 
 script:
   - docker run korynewton/react-test npm test -- --coverage
