@@ -1,0 +1,31 @@
+# CI flow:
+# specify docker as dependency
+# build test version of FE
+# run tests
+# build production version of individual projects
+# push images to docker hub
+# tell Elastic Beanstalk to update
+
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t korynewton/react-test -f ./client/Dockfile.dev ./client
+
+script:
+  - docker run korynewton/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t korynewton/multi-client ./client
+  - docker build -t korynewton/multi-nginx ./nginx
+  - docker build -t korynewton/multi-server ./server
+  - docker build -t korynewton/multi-worker ./worker
+
+  # Log in to Docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u  "$DOCKER_ID" --password-stdin
+  # Push images to docker hub
+  - docker push korynewton/multi-client
+  - docker push korynewton/multi-nginx
+  - docker push korynewton/multi-server
+  - docker push korynewton/multi-worker
