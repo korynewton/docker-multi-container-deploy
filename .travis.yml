@@ -29,3 +29,16 @@ after_success:
   - docker push korynewton/multi-nginx
   - docker push korynewton/multi-server
   - docker push korynewton/multi-worker
+
+deploy:
+  provide: elasticbeanstalk
+  region: us-west-2
+  app: multi-docker
+  env: MultiDocker-env
+  bucket_name: elasticbeanstalk-us-west-2-117340365986
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
